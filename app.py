@@ -4,7 +4,7 @@ import google.generativeai as genai
 import json
 
 # --- CONFIGURATION ---
-GENAI_API_KEY = "AQ.Ab8RN6IQYs15ftavT9ZK9d6RbmcZ_otXyKmCbBrZxd_hNuDCHg"
+GENAI_API_KEY = "AQ.Ab8RN6IQYs15ftavT9ZK9d6RbmcZ_otXyKmCbBrZxd_hNuDCHg"  # Paste your Gemini API key here!
 genai.configure(api_key=GENAI_API_KEY)
 
 # Use the Gemini model (simulating Redrob 2B for the prototype)
