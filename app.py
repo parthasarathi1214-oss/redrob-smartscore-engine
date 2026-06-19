@@ -41,9 +41,16 @@ def get_ai_scorecard(resume_text, jd_text):
     
     response = model.generate_content(prompt)
     
-    # Clean up the output to ensure it's pure JSON
-    result_text = response.text.replace('```json', '').replace('```', '').strip()
-    return json.loads(result_text)
+    # ROBUST JSON PARSER: Find the first { and last } to ignore extra conversational text
+    raw_text = response.text
+    start_index = raw_text.find('{')
+    end_index = raw_text.rfind('}') + 1
+    
+    if start_index != -1 and end_index != -1:
+        clean_json = raw_text[start_index:end_index]
+        return json.loads(clean_json)
+    else:
+        raise ValueError("The AI did not return a valid JSON structure.")
 
 # --- USER INTERFACE (STREAMLIT) ---
 st.set_page_config(page_title="Redrob SmartScore Engine", page_icon="🚀")
@@ -92,6 +99,7 @@ if st.button("Generate SmartScore"):
                         st.markdown(f"- {skill}")
                         
             except Exception as e:
-                st.error("There was an error parsing the AI response. Please try again.")
+                st.error(f"Error parsing AI response: {str(e)}")
+                st.warning("Sometimes the free AI gets busy or formats incorrectly. Just click the button to try again!")
     else:
         st.warning("Please provide both a Job Description and a Resume PDF.")
