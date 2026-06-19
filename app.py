@@ -8,7 +8,7 @@ GENAI_API_KEY = "AQ.Ab8RN6IQYs15ftavT9ZK9d6RbmcZ_otXyKmCbBrZxd_hNuDCHg"  # Paste
 genai.configure(api_key=GENAI_API_KEY)
 
 # Use the Gemini model (simulating Redrob 2B for the prototype)
-model = genai.GenerativeModel('gemini-1.5-flash')
+model = genai.GenerativeModel('gemini-3.5-flash')
 
 # --- HELPER FUNCTIONS ---
 def extract_text_from_pdf(uploaded_file):
