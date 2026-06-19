@@ -4,7 +4,7 @@ import google.generativeai as genai
 import json
 
 # --- CONFIGURATION ---
-GENAI_API_KEY = AQ.Ab8RN6IQYs15ftavT9ZK9d6RbmcZ_otXyKmCbBrZxd_hNuDCHg  # Paste your Gemini API key here!
+GENAI_API_KEY = "AQ.Ab8RN6IQYs15ftavT9ZK9d6RbmcZ_otXyKmCbBrZxd_hNuDCHg"
 genai.configure(api_key=GENAI_API_KEY)
 
 # Use the Gemini model (simulating Redrob 2B for the prototype)
@@ -42,8 +42,7 @@ def get_ai_scorecard(resume_text, jd_text):
     response = model.generate_content(prompt)
     
     # Clean up the output to ensure it's pure JSON
-    result_text = response.text.replace('```json', '').replace('
-```', '').strip()
+    result_text = response.text.replace('```json', '').replace('```', '').strip()
     return json.loads(result_text)
 
 # --- USER INTERFACE (STREAMLIT) ---
