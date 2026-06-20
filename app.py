@@ -47,7 +47,7 @@ def get_ai_scorecard(resume_text, jd_text):
     # ROBUST JSON PARSER: Find the first {{ and last }} to ignore extra conversational text
     raw_text = response.text
     start_index = raw_text.find('{')
-    end_index = raw_text.rfind('}}') + 1
+    end_index = raw_text.rfind('}') + 1
     
     if start_index != -1 and end_index != -1:
         clean_json = raw_text[start_index:end_index]
