@@ -57,8 +57,7 @@ def get_ai_scorecard(resume_text, jd_text):
     if start_index != -1 and end_index != -1:
         clean_json = raw_text[start_index:end_index]
         # Strip out any rogue markdown the AI might have tried to inject
-        clean_json = clean_json.replace("```json", "").replace("
-```", "").strip()
+       clean_json = clean_json.replace("```json", "").replace("```", "").strip()
         return json.loads(clean_json)
     else:
         raise ValueError(f"The AI did not return a valid JSON structure. Raw output: {raw_text}")
