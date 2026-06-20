@@ -1,12 +1,17 @@
 import streamlit as st
 import PyPDF2
-from google import genai # UPDATED IMPORT
+from google import genai
 import json
 
 # --- CONFIGURATION ---
-GENAI_API_KEY = "AQ.Ab8RN6IQYs15ftavT9ZK9d6RbmcZ_otXyKmCbBrZxd_hNuDCHg"  # Paste your Gemini API key here!
+# Attempt to load the API key securely from Streamlit Secrets.
+# If not found (e.g., local testing), it uses your provided key.
+try:
+    GENAI_API_KEY = st.secrets["GOOGLE_API_KEY"]
+except KeyError:
+    GENAI_API_KEY = "AQ.Ab8RN6IQYs15ftavT9ZK9d6RbmcZ_otXyKmCbBrZxd_hNuDCHg"
 
-# Create the new GenAI client using the correct library
+# Create the new GenAI client
 client = genai.Client(api_key=GENAI_API_KEY)
 
 # --- HELPER FUNCTIONS ---
@@ -38,22 +43,25 @@ def get_ai_scorecard(resume_text, jd_text):
     Return ONLY valid JSON.
     """
     
-    # UPDATED SDK SYNTAX
+    # Using the correct, existing model name
     response = client.models.generate_content(
-        model='gemini-3.5-flash',
+        model='gemini-1.5-flash',
         contents=prompt
     )
     
-    # ROBUST JSON PARSER: Find the first {{ and last }} to ignore extra conversational text
+    # BULLETPROOF JSON PARSER
     raw_text = response.text
     start_index = raw_text.find('{')
     end_index = raw_text.rfind('}') + 1
     
     if start_index != -1 and end_index != -1:
         clean_json = raw_text[start_index:end_index]
+        # Strip out any rogue markdown the AI might have tried to inject
+        clean_json = clean_json.replace("```json", "").replace("
+```", "").strip()
         return json.loads(clean_json)
     else:
-        raise ValueError("The AI did not return a valid JSON structure.")
+        raise ValueError(f"The AI did not return a valid JSON structure. Raw output: {raw_text}")
 
 # --- USER INTERFACE (STREAMLIT) ---
 st.set_page_config(page_title="Redrob SmartScore Engine", page_icon="🚀")
