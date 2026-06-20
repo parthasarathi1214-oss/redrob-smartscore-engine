@@ -45,7 +45,7 @@ def get_ai_scorecard(resume_text, jd_text):
     
     # Using the correct, existing model name
     response = client.models.generate_content(
-        model='gemini-1.5-flash',
+        model='gemini-3.5-flash',
         contents=prompt
     )
     
