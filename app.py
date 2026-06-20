@@ -1,14 +1,13 @@
 import streamlit as st
 import PyPDF2
-import google.generativeai as genai
+from google import genai # UPDATED IMPORT
 import json
 
 # --- CONFIGURATION ---
 GENAI_API_KEY = "AQ.Ab8RN6IQYs15ftavT9ZK9d6RbmcZ_otXyKmCbBrZxd_hNuDCHg"  # Paste your Gemini API key here!
-genai.configure(api_key=GENAI_API_KEY)
 
-# Use the Gemini model (simulating Redrob 2B for the prototype)
-model = genai.GenerativeModel('gemini-3.5-flash')
+# Create the new GenAI client using the correct library
+client = genai.Client(api_key=GENAI_API_KEY)
 
 # --- HELPER FUNCTIONS ---
 def extract_text_from_pdf(uploaded_file):
@@ -39,12 +38,16 @@ def get_ai_scorecard(resume_text, jd_text):
     Return ONLY valid JSON.
     """
     
-    response = model.generate_content(prompt)
+    # UPDATED SDK SYNTAX
+    response = client.models.generate_content(
+        model='gemini-3.5-flash',
+        contents=prompt
+    )
     
-    # ROBUST JSON PARSER: Find the first { and last } to ignore extra conversational text
+    # ROBUST JSON PARSER: Find the first {{ and last }} to ignore extra conversational text
     raw_text = response.text
-    start_index = raw_text.find('{')
-    end_index = raw_text.rfind('}') + 1
+    start_index = raw_text.find('{{')
+    end_index = raw_text.rfind('}}') + 1
     
     if start_index != -1 and end_index != -1:
         clean_json = raw_text[start_index:end_index]
@@ -101,5 +104,3 @@ if st.button("Generate SmartScore"):
             except Exception as e:
                 st.error(f"Error parsing AI response: {str(e)}")
                 st.warning("Sometimes the free AI gets busy or formats incorrectly. Just click the button to try again!")
-    else:
-        st.warning("Please provide both a Job Description and a Resume PDF.")
